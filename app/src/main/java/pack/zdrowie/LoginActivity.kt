@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputLayout
@@ -30,6 +31,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setupViews()
+        registerButton()
     }
 
     private fun setupViews() {
@@ -51,5 +53,16 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+    private fun registerButton() {
+        binding.registerText.setOnClickListener {
+            window.setBackgroundDrawableResource(R.color.background_navy)
+            val intent = Intent(this, RegisterActivity::class.java) // Should go to Home, not RegisterActivity
 
+
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle()
+
+            startActivity(intent, options)
+        }
+    }
 }
+

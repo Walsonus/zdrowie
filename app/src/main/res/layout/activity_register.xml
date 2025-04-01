@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_navy"
     android:padding="24dp"
-    android:id="@+id/main">
+    android:id="@+id/register">
 
     <!-- Logo -->
     <ImageView
@@ -51,12 +51,36 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/password"
-        android:textColorHint="@color/text_light"
         app:hintTextColor="@color/accent_gold"
+        android:textColorHint="@color/text_light"
         app:boxBackgroundColor="@color/input_field_bg"
         app:boxStrokeColor="@color/accent_gold"
         app:passwordToggleTint="@color/accent_gold"
         app:layout_constraintTop_toBottomOf="@id/emailLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_light"
+            android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Password 2nd Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password2Layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/repeat_password"
+        app:hintTextColor="@color/accent_gold"
+        android:textColorHint="@color/text_light"
+        app:boxBackgroundColor="@color/input_field_bg"
+        app:boxStrokeColor="@color/accent_gold"
+        app:passwordToggleTint="@color/accent_gold"
+        app:layout_constraintTop_toBottomOf="@id/passwordLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -74,35 +98,12 @@
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:backgroundTint="@color/accent_gold"
-        android:text="@string/login"
+        android:text="@string/sign_up"
         android:textColor="@color/background_navy"
         android:textAllCaps="false"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/passwordLayout"
+        app:layout_constraintTop_toBottomOf="@id/password2Layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Secondary Actions -->
-    <TextView
-        android:id="@+id/forgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/forgot_password"
-        android:textColor="@color/accent_gold"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/sign_up"
-        android:id="@+id/registerText"
-        android:textColor="@color/text_light"
-        app:layout_constraintTop_toBottomOf="@id/forgotPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

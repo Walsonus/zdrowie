@@ -8,4 +8,5 @@
     <string name="login">LOGIN</string>
     <string name="dont_have_account">Nie masz konta?</string>
     <string name="sign_up">ZAREJESTRUJ</string>
+    <string name="repeat_password">Powtórz hasło</string>
 </resources>
