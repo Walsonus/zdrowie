@@ -8,4 +8,11 @@
     <string name="dont_have_account">Need an account?</string>
     <string name="sign_up">SIGN UP</string>
     <string name="repeat_password">Repeat password</string>
+    <string name="no_email">No email address provided</string>
+    <string name="wrong_email">Wrong email address</string>
+    <string name="email_used">Adres jest już użyty</string>
+    <string name="no_password">The address is already in use</string>
+    <string name="wrong_password">Passwords do not match</string>
+    <string name="user_registered">Registered user</string>
+    <string name="error_adding_user">User has not been registered</string>
 </resources>
