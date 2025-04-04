@@ -37,10 +37,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailTextEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_light"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:textColor="@color/text_light" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password Field -->
@@ -61,10 +62,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordTextEdit2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_light"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="@color/text_light" />
         </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password 2nd Field -->
@@ -85,10 +87,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordTextEdit3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_light"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="@color/text_light" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Login Button -->

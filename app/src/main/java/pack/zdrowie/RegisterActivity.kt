@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.ViewCompat
+import pack.zdrowie.databinding.ActivityLoginBinding
 import pack.zdrowie.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
@@ -28,5 +29,9 @@ class RegisterActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+    // function needed to get private variable to use in tests
+    fun getBinding(): ActivityRegisterBinding {
+        return binding
     }
 }
