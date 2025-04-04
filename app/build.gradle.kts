@@ -59,8 +59,6 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.espresso.intents)
     testImplementation(libs.junit.junit)
-    testImplementation(libs.testng)
-    testImplementation(libs.testng)
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("androidx.test:runner:1.5.2")
@@ -74,6 +72,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     testImplementation("androidx.fragment:fragment-testing:1.6.0")
+    testImplementation(libs.testng)
     androidTestImplementation ("androidx.test:core-ktx:1.5.0")
     testImplementation(kotlin("test"))
 }
