@@ -10,9 +10,12 @@
     <string name="repeat_password">Repeat password</string>
     <string name="no_email">No email address provided</string>
     <string name="wrong_email">Wrong email address</string>
-    <string name="email_used">Adres jest już użyty</string>
-    <string name="no_password">The address is already in use</string>
-    <string name="wrong_password">Passwords do not match</string>
+    <string name="email_used">The address is already in use</string>
+    <string name="no_password">No password provided</string>
+    <string name="mismatch_password">Passwords do not match</string>
+    <string name="wrong_password">Wrong password</string>.
     <string name="user_registered">Registered user</string>
     <string name="error_adding_user">User has not been registered</string>
+    <string name="no_login_data">User information not provided</string>
+    <string name="user_logged">User logged in</string>
 </resources>

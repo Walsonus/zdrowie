@@ -115,7 +115,7 @@ class RegisterActivity : AppCompatActivity() {
             return false
         }
         if (pass2.isBlank() || pass2 != pass) {
-            Toast.makeText(this, getString(R.string.wrong_password), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.mismatch_password), Toast.LENGTH_SHORT).show()
             return false
         }
         return true
