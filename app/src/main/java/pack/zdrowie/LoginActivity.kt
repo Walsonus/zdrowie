@@ -52,6 +52,10 @@ class LoginActivity : AppCompatActivity() {
     private fun performLogin() {
 
     }
+    // function needed to get private variable to use in tests
+    fun getBinding(): ActivityLoginBinding {
+        return binding
+    }
 
     private fun registerButton() {
         binding.registerText.setOnClickListener {
