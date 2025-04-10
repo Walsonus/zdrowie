@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import pack.zdrowie.database.UnitEnum
-import java.util.Date
+import java.time.LocalDate
 
 /**
  * Represents a supplement record in the database.
@@ -35,6 +35,6 @@ data class Supplements(
     val suppCapacity: Int,
     val suppUnit: UnitEnum,
     val suppPic: String,
-    val suppExpDate: Date,
+    val suppExpDate: LocalDate,
     val suppUserId: Int
 )

@@ -3,7 +3,7 @@ package pack.zdrowie.database.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.time.LocalDate
 
 /**
  * Represents a step-tracking record for a user.
@@ -28,7 +28,7 @@ import java.util.Date
 )
 data class Steps(
     @PrimaryKey(autoGenerate = true) val stepsId: Int,
-    val stepsDate: Date,
+    val stepsDate: LocalDate,
     val stepsCount: Int,
     val stepsUserId: Int
 )
