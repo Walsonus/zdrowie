@@ -132,7 +132,6 @@ class RegisterActivity : AppCompatActivity() {
     private suspend fun isEmailUsed(email: String): Boolean {
         return database.userDao().getEmailCount(email) > 0
     }
-}
     // function needed to get private variable to use in tests
     fun getBinding(): ActivityRegisterBinding {
         return binding
