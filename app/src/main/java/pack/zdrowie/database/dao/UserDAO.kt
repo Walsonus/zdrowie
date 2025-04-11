@@ -45,4 +45,19 @@ interface UserDAO {
      */
     @Query("SELECT * FROM user WHERE userName = :userName ")
     suspend fun getUserByName(userName: String): User
+
+    /**
+     * Retrieves a user by their email.
+     *
+     * @param userMail The username of the user.
+     * @return The corresponding [User] entity.
+     */
+    @Query("SELECT * FROM user WHERE userMail = :userMail ")
+    suspend fun getUserByMail(userMail: String): User
+
+    @Query("SELECT COUNT(*) FROM user")
+    suspend fun getCount(): Int
+
+    @Query("SELECT COUNT(*) FROM user WHERE userMail = :email")
+    suspend fun getEmailCount(email: String): Int
 }

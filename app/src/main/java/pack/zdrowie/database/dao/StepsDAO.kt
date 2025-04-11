@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import pack.zdrowie.database.entities.Steps
+import java.time.LocalDate
 import java.util.Date
 
 /** Data Access Object (DAO) for managing steps-related database operations. */
@@ -34,7 +35,7 @@ interface StepsDAO {
      * @return The ID of the steps record.
      */
     @Query("SELECT * FROM steps WHERE stepsId = :stepsId")
-    suspend fun getStepsById(stepsId: Int): Int
+    suspend fun getStepsById(stepsId: Int): Steps
 
     /**
      * Retrieves step records by a specific date.
@@ -43,5 +44,5 @@ interface StepsDAO {
      * @return A list of [Steps] entities associated with the given date.
      */
     @Query("SELECT * FROM steps WHERE stepsDate = :stepsDate")
-    suspend fun getStepsByDate(stepsDate: Date): List<Steps>
+    suspend fun getStepsByDate(stepsDate: LocalDate): List<Steps>
 }

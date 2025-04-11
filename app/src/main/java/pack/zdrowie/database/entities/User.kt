@@ -2,6 +2,7 @@ package pack.zdrowie.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 import java.util.Date
 
 /**
@@ -20,8 +21,9 @@ import java.util.Date
 data class User(
     @PrimaryKey(autoGenerate = true) val userId: Int,
     val userName: String,
+    val userMail: String,
     val userPassword: String,
     val userWeight: Float,
     val userHeight: Float,
-    val userDateOfBirth: Date
+    val userDateOfBirth: LocalDate
 )

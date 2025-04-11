@@ -1,6 +1,8 @@
 package pack.zdrowie.database
 
 import androidx.room.TypeConverter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 /**
@@ -11,26 +13,28 @@ import java.util.Date
  */
 class Converters {
 
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
     /**
-     * Converts a timestamp (Long) to a [Date] object.
+     * Converts a String to a LocalDate object.
      *
-     * @param value The timestamp value in milliseconds.
-     * @return A [Date] object or null if the input is null.
+     * @param value The string representing a date.
+     * @return A LocalDate object or null if the input is null.
      */
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun fromStringToLocalDate(value: String?): LocalDate? {
+        return value?.let { LocalDate.parse(it, formatter) }
     }
 
     /**
-     * Converts a [Date] object to a timestamp (Long).
+     * Converts a LocalDate object to a String.
      *
-     * @param date The [Date] object.
-     * @return The timestamp in milliseconds or null if the input is null.
+     * @param date The LocalDate object.
+     * @return A string representation of the date or null if the input is null.
      */
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun fromLocalDateToString(date: LocalDate?): String? {
+        return date?.format(formatter)
     }
 
     /**
