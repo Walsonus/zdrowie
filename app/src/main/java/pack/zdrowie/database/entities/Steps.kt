@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.LocalDate
+import java.util.Date
 
 /**
  * Represents a step-tracking record for a user.
