@@ -142,6 +142,10 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+    // function needed to get private variable to use in tests
+    fun getBinding(): ActivityLoginBinding {
+        return binding
+    }
 
     /**
      * Registers the click listener for the register text.
