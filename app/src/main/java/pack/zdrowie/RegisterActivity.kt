@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.ViewCompat
+
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pack.zdrowie.database.AppDatabase
 import pack.zdrowie.database.DatabaseProvider
 import pack.zdrowie.database.entities.User
+import pack.zdrowie.databinding.ActivityLoginBinding
 import pack.zdrowie.databinding.ActivityRegisterBinding
 import java.time.LocalDate
 
@@ -129,5 +131,10 @@ class RegisterActivity : AppCompatActivity() {
      */
     private suspend fun isEmailUsed(email: String): Boolean {
         return database.userDao().getEmailCount(email) > 0
+    }
+}
+    // function needed to get private variable to use in tests
+    fun getBinding(): ActivityRegisterBinding {
+        return binding
     }
 }
