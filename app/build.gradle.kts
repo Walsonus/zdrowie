@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
+    androidTestImplementation(project(":app"))
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
@@ -73,5 +74,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     testImplementation("androidx.fragment:fragment-testing:1.6.0")
+    androidTestImplementation ("androidx.test:core-ktx:1.5.0")
     testImplementation(kotlin("test"))
 }
