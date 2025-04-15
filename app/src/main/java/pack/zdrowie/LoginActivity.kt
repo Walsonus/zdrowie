@@ -50,7 +50,36 @@ class LoginActivity : AppCompatActivity() {
 
     // performLogin makes user logged in and changes activity
     private fun performLogin() {
+        val userEmail = binding.emailLayout.editText?.text.toString().trim()
+        val userPassword = binding.passwordLayout.editText?.text.toString().trim()
 
+        // Launch a coroutine for asynchronous database operations
+        lifecycleScope.launch {
+            val user = userDAO.getUserByMail(userEmail)
+
+            if (user != null) {
+                if (user.userPassword == userPassword) {
+                    // TODO: Change the target Activity to the correct one when ready
+                    /*
+                        val intent = Intent(this@LoginActivity, MainPage::class.java).apply {
+                            putExtra("UserID", user.userId)
+                        }
+                        startActivity(intent)
+                        finish()
+                    */
+                    // TODO: Consider removing this Toast after implementing the proper transition
+                    Toast.makeText(this@LoginActivity, getString(R.string.user_logged), Toast.LENGTH_SHORT).show()
+                } else {
+                    // Inform the user about the incorrect password
+                    Toast.makeText(this@LoginActivity, getString(R.string.wrong_password), Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+            } else {
+                // Inform the user that the provided email does not exist
+                Toast.makeText(this@LoginActivity, getString(R.string.wrong_email), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+        }
     }
     // function needed to get private variable to use in tests
     fun getBinding(): ActivityLoginBinding {
