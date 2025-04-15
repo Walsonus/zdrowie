@@ -9,6 +9,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.sadadnan.customtoastlib.CustomToast
 import kotlinx.coroutines.launch
 import pack.zdrowie.database.AppDatabase
 import pack.zdrowie.database.DatabaseProvider
@@ -119,18 +120,20 @@ class LoginActivity : AppCompatActivity() {
             if (user != null) {
                 if (user.userPassword == userPassword) {
                     // TODO: Change the target Activity to the correct one when ready
-                    /*
-                        val intent = Intent(this@LoginActivity, MainPage::class.java).apply {
-                            putExtra("UserID", user.userId)
-                        }
-                        startActivity(intent)
-                        finish()
-                    */
+
+                    val intent = Intent(this@LoginActivity, MainAppActivity::class.java).apply {
+                        putExtra("UserID", user.userId)
+                    }
+                    startActivity(intent)
+                    finish()
+
                     // TODO: Consider removing this Toast after implementing the proper transition
-                    Toast.makeText(this@LoginActivity, getString(R.string.user_logged), Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@LoginActivity, getString(R.string.user_logged), Toast.LENGTH_SHORT).show()
+                    CustomToast.ShowSuccessToast(this@LoginActivity, false, getString(R.string.user_logged));
                 } else {
                     // Inform the user about the incorrect password
-                    Toast.makeText(this@LoginActivity, getString(R.string.wrong_password), Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@LoginActivity, getString(R.string.wrong_password), Toast.LENGTH_SHORT).show()
+                    CustomToast.ShowErrorToast(this@LoginActivity,true,getString(R.string.wrong_password));
                     return@launch
                 }
             } else {
