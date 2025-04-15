@@ -118,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val user = userDAO.getUserByMail(userEmail)
 
-            if (true) {
+            if (user != null) {
                 if (user.userPassword == userPassword) {
                     // TODO: Change the target Activity to the correct one when ready
                     /*
