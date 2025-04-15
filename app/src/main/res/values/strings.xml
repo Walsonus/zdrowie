@@ -13,7 +13,10 @@
     <string name="wrong_email">Błędny adres email</string>
     <string name="email_used">Adres jest już użyty</string>
     <string name="no_password">Nie podano hasła</string>
-    <string name="wrong_password">Hasła nie zgadzają się</string>
+    <string name="mismatch_password">Hasła nie zgadzają się</string>
+    <string name="wrong_password">Błędne hasło</string>
     <string name="user_registered">Użytkownik zarejestrowany</string>
     <string name="error_adding_user">Użytkownik nie został zarejestrowany</string>
+    <string name="no_login_data">Informacje o użytkowniku nie zostały podane</string>
+    <string name="user_logged">Użytkownik zalogowany</string>
 </resources>
