@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import pack.zdrowie.database.UnitEnum
 import java.time.LocalDate
+import java.util.Date
 
 /**
  * Represents a supplement record in the database.
