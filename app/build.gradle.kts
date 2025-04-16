@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation(project(":app"))
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-
+    implementation ("com.github.sad-adnan:customToast:v1.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -52,15 +52,13 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
-
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("com.google.android.material:material:1.12.0")
     implementation(libs.androidx.junit)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.espresso.intents)
     testImplementation(libs.junit.junit)
-    testImplementation(libs.testng)
-    testImplementation(libs.testng)
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("androidx.test:runner:1.5.2")
@@ -74,6 +72,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     testImplementation("androidx.fragment:fragment-testing:1.6.0")
+    testImplementation(libs.testng)
     androidTestImplementation ("androidx.test:core-ktx:1.5.0")
     testImplementation(kotlin("test"))
 }
