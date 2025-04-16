@@ -163,5 +163,6 @@ class LoginActivity : AppCompatActivity() {
             // Start the RegisterActivity using the defined options
             startActivity(intent, options)
         }
+
     }
 }
