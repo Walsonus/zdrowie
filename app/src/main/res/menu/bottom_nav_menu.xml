@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
-        android:title="home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/home"
         android:iconTint="@null"
         app:showAsAction="always|withText"/>
     <item
         android:id="@+id/nav_gps"
-        android:icon="@drawable/ic_calories2"
-        android:title="gps"
+        android:icon="@drawable/baseline_gps_fixed_24"
+        android:title="@string/gps"
         app:showAsAction="always"/>
     <item
         android:id="@+id/nav_supplements"
-        android:icon="@drawable/ic_supplements"
-        android:title="supplements" />
+        android:icon="@drawable/baseline_supplements_24"
+        android:title="@string/supplements" />
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_profile"
-        android:title="profile" />
+        android:icon="@drawable/baseline_profile_24"
+        android:title="@string/profile" />
 </menu>
