@@ -93,7 +93,6 @@ class LoginActivity : AppCompatActivity() {
     private fun validateForm(): Boolean {
         val userEmail = binding.emailLayout.editText?.text.toString().trim()
         val userPassword = binding.passwordLayout.editText?.text.toString().trim()
-
         if (userEmail.isBlank() || userPassword.isBlank()) {
             // Inform the user that login data is missing
             Toast.makeText(this, getString(R.string.no_login_data), Toast.LENGTH_SHORT).show()
