@@ -18,4 +18,12 @@
     <string name="error_adding_user">User has not been registered</string>
     <string name="no_login_data">User information not provided</string>
     <string name="user_logged">User logged in</string>
+    <string name="welcome">"Welcome, "</string>
+    <string name="quick_actions">Quick actions</string>
+    <string name="steps">steps</string>
+    <string name="calories">calories</string>
+    <string name="home">home</string>
+    <string name="gps">gps</string>
+    <string name="supplements">supplements</string>
+    <string name="profile">profile</string>
 </resources>
