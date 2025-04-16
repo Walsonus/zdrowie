@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
         val userPassword = binding.passwordLayout.editText?.text.toString().trim()
         if (userEmail.isBlank() || userPassword.isBlank()) {
             // Inform the user that login data is missing
-            Toast.makeText(this, getString(R.string.no_login_data), Toast.LENGTH_SHORT).show()
+            CustomToast.ShowErrorToast(this@LoginActivity, getString(R.string.no_login_data))
             return false
         }
         return true
@@ -138,7 +138,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 // Inform the user that the provided email does not exist
-                Toast.makeText(this@LoginActivity, getString(R.string.wrong_email), Toast.LENGTH_SHORT).show()
+                CustomToast.ShowErrorToast(this@LoginActivity, getString(R.string.wrong_email))
                 return@launch
             }
         }
