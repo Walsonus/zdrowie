@@ -12,11 +12,16 @@ import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainAppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        //DARK THEME
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //LIGHT THEME
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         var binding = ActivityMainAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setContentView(R.layout.activity_main_app)
