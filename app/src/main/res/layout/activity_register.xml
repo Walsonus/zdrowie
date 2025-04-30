@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_navy"
+    android:background="?attr/colorSurface"
     android:padding="24dp"
     android:id="@+id/register">
 
@@ -16,6 +16,7 @@
         android:layout_marginTop="40dp"
         android:src="@drawable/app_logo"
         android:contentDescription="@string/app_name"
+        app:tint="@null"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -28,10 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:hint="@string/email"
-        app:hintTextColor="@color/accent_gold"
-        android:textColorHint="@color/text_light"
-        app:boxBackgroundColor="@color/input_field_bg"
-        app:boxStrokeColor="@color/accent_gold"
+        app:hintTextColor="?attr/colorSecondary"
+        android:textColorHint="?attr/colorOnSurface"
+        app:boxBackgroundColor="?attr/colorSurface"
+        app:boxStrokeColor="?attr/colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/appLogo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -41,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="@color/text_light" />
+            android:textColor="?attr/colorOnSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password Field -->
@@ -52,11 +53,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/password"
-        app:hintTextColor="@color/accent_gold"
-        android:textColorHint="@color/text_light"
-        app:boxBackgroundColor="@color/input_field_bg"
-        app:boxStrokeColor="@color/accent_gold"
-        app:passwordToggleTint="@color/accent_gold"
+        app:hintTextColor="?attr/colorSecondary"
+        android:textColorHint="?attr/colorOnSurface"
+        app:boxBackgroundColor="?attr/colorSurface"
+        app:boxStrokeColor="?attr/colorSecondary"
+        app:passwordToggleTint="?attr/colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/emailLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -66,8 +67,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColor="@color/text_light" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:textColor="?attr/colorOnSurface" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password 2nd Field -->
     <com.google.android.material.textfield.TextInputLayout
@@ -77,11 +78,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/repeat_password"
-        app:hintTextColor="@color/accent_gold"
-        android:textColorHint="@color/text_light"
-        app:boxBackgroundColor="@color/input_field_bg"
-        app:boxStrokeColor="@color/accent_gold"
-        app:passwordToggleTint="@color/accent_gold"
+        app:hintTextColor="?attr/colorSecondary"
+        android:textColorHint="?attr/colorOnSurface"
+        app:boxBackgroundColor="?attr/colorSurface"
+        app:boxStrokeColor="?attr/colorSecondary"
+        app:passwordToggleTint="?attr/colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/passwordLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -91,18 +92,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColor="@color/text_light" />
+            android:textColor="?attr/colorOnSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Login Button -->
+    <!-- Register Button -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="@color/accent_gold"
+        android:backgroundTint="?attr/colorSecondary"
         android:text="@string/sign_up"
-        android:textColor="@color/background_navy"
+        android:textColor="?attr/colorOnSecondary"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/password2Layout"
