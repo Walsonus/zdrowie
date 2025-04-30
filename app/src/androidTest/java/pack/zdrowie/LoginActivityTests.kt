@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import junit.framework.TestCase.assertNotNull
 import org.junit.Rule
@@ -51,21 +52,6 @@ class LoginActivityInstrumentedTest {
         db.clearAllTables()
 //        db.close()
     }
-
-    //TEST FOR DISPLAY INCORRECT DATA
-//    @Test
-//    fun login_withEmptyFields_showsToastError() {
-//        ActivityScenario.launch(LoginActivity::class.java)
-//
-//        onView(withId(R.id.loginButton)).perform(click())
-//
-//        SystemClock.sleep(2000)
-//
-//        onView(withText(R.string.no_login_data))
-//            .inRoot(ToastMatcher())
-//            .check(matches(isDisplayed()))
-//    }
-
 
     @Test
     fun login_withInvalidCredentials_showsError() {
@@ -132,7 +118,7 @@ class LoginActivityInstrumentedTest {
             onView(withId(R.id.loginButton)).perform(click())
 
             // Check if we've navigated to main
-            onView(withId(R.id.main)).check(matches(isDisplayed()))
+            onView(withId(R.id.mainAppActivity)).check(matches(isDisplayed()))
         }
     }
 

@@ -1,5 +1,6 @@
 package pack.zdrowie
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -86,7 +87,10 @@ class RegisterActivity : AppCompatActivity() {
             try {
                 database.userDao().insert(newUser)
                 Toast.makeText(this@RegisterActivity, getString(R.string.user_registered), Toast.LENGTH_SHORT).show()
-                finish() // Close the Activity after successful registration
+//                finish()
+//                Close the Activity after successful registration
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                startActivity(intent)
             } catch (e: Exception) {
                 Toast.makeText(this@RegisterActivity, getString(R.string.error_adding_user), Toast.LENGTH_SHORT).show()
             }
