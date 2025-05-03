@@ -1,31 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Zdrowie" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+    <!-- Base theme - should contain ALL common attributes -->
+    <style name="Base.Theme.Zdrowie" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Common attributes for BOTH themes -->
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        <item name="android:windowBackground">@color/background_navy</item>
+        <item name="bottomNavigationStyle">@style/BottomNavStyle</item>
+
+        <!-- Default light mode colors (will be overridden in night mode) -->
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorPrimaryVariant">@color/logo_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_gold</item>
+        <item name="colorSecondaryVariant">@color/accent_gold</item>
+        <item name="colorOnSecondary">@color/logo_blue</item>
+    </style>
+
+    <!-- Light theme variant -->
+    <style name="Theme.Zdrowie" parent="Base.Theme.Zdrowie">
+        <!-- Light-specific overrides -->
+        <item name="android:windowBackground">@color/light_background_navy</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/light_text_dark</item>
+        <item name="colorSurfaceContainer">@color/light_background_navy</item>
+        <item name="android:statusBarColor">@color/primary_blue</item>
+        <item name="android:navigationBarColor">@color/light_background_navy</item>
+        <item name="android:textColorPrimary">@color/light_text_dark</item>
+        <item name="android:textColorSecondary">@color/primary_blue</item>
     </style>
 
     <style name="WindowAnimationTransition">
         <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
         <item name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Zdrowie" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="selectableItemBackground">@android:color/transparent</item>
-    </style>
+
     <style name="BottomNavStyle" parent="Widget.Material3.BottomNavigationView">
         <item name="itemBackground">@android:color/transparent</item>
         <item name="android:itemBackground">@android:color/transparent</item>
+        <item name="itemTextColor">?android:attr/textColorPrimary</item>
+        <item name="itemIconTint">?android:attr/textColorPrimary</item>
     </style>
 </resources>

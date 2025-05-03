@@ -20,5 +20,10 @@
     <!-- Derived Colors -->
     <color name="input_field_bg">#1A1F4D</color>
     <color name="button_pressed">#0A1034</color>
-
+    <!-- Light theme specific colors -->
+    <color name="light_background_navy">#F5F5FF</color>
+    <color name="light_text_dark">#1A237E</color>
+    <color name="light_text_light">#3F51B5</color>
+    <color name="light_input_field_bg">#FFFFFF</color>
+    <color name="light_button_pressed">#E8EAF6</color>
 </resources>
