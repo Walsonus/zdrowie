@@ -8,5 +8,4 @@ data class Activity(
 ) {
     val kcalBurned: Float
         get() = (MET * 3.5f * weightInKg / 200f) * durationInMinutes
-
 }

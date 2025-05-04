@@ -1,7 +1,6 @@
 package pack.zdrowie.caloriesTracker
 
-class caloriesTracker {
-
+class CaloriesTracker {
     private val meals = mutableListOf<Meal>()
     private val activities = mutableListOf<Activity>()
 
