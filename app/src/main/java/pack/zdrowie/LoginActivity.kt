@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -48,7 +49,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Enable edge-to-edge mode for immersive layout
         enableEdgeToEdge()
-
+        //DARK THEME
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //LIGHT THEME
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         // Initialize view binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
