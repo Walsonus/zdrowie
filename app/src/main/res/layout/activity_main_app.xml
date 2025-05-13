@@ -5,140 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:id="@+id/mainAppActivity">
+    android:background="?attr/colorSurface">
 
-    <!-- App Bar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <!-- Fragment Container -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainAppActivity"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="0dp"
         android:background="?attr/colorSurface"
-        android:elevation="4dp"
-        android:layout_marginTop="62dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="?attr/colorOnSurface"
-        app:title="@string/app_name"
-        app:navigationIcon="@drawable/zplusplus"
-        app:titleCentered="true">
-
-        <ImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/baseline_profile_24"
-            android:contentDescription="profil"
-            app:tint="@null"
-            android:layout_gravity="end"/>
-    </com.google.android.material.appbar.MaterialToolbar>
-
-    <!-- Welcome Message -->
-    <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="62dp"
-        android:text="@string/welcome"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
-
-    <!-- Health Summary Cards -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/stepsCard"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="12dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
-        app:layout_constraintEnd_toStartOf="@id/caloriesCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_steps_24"
-                app:tint="@null"
-                android:contentDescription="steps"/>
-
-            <TextView
-                android:id="@+id/stepsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="8,542"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/steps"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/caloriesCard"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="24dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/stepsCard"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_calories_24"
-                app:tint="@null"
-                android:contentDescription="calories"/>
-
-            <TextView
-                android:id="@+id/caloriesCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="1,240"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/calories"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"/>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -152,4 +28,5 @@
         app:itemTextColor="@drawable/bottom_nav_colors"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
