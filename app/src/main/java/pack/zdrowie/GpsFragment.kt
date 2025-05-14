@@ -1,13 +1,18 @@
 package pack.zdrowie
 
+ ZDR-19
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import android.util.Log
+
+import android.os.Bundle
+ master
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+ ZDR-19
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -49,11 +54,16 @@ class GpsFragment : Fragment() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationDao: LocationDao
 
+
+
+class GpsFragment : Fragment() {
+ master
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+ ZDR-19
 
         val applicationContext = requireContext().applicationContext
         locationDao = DatabaseProvider.getDatabase(applicationContext).locationDao()
@@ -179,4 +189,8 @@ class GpsFragment : Fragment() {
         stopLocationUpdates()
         Log.d("GPS_LIFECYCLE", "GpsFragment: onPause() - Zatrzymano aktualizacje lokalizacji.")
     }
+
+        return inflater.inflate(R.layout.fragment_gps, container, false)
+    }
+ master
 }
