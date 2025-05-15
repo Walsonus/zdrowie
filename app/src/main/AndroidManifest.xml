@@ -16,7 +16,9 @@
         android:theme="@style/Theme.Zdrowie"
         tools:targetApi="31">
 
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKeyPlaceholder}" />
         <activity
             android:name=".MainAppActivity"
             android:exported="false" />

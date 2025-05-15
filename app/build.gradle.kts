@@ -72,7 +72,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
     implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("com.google.android.gms:play-services-maps:18.1.0") // Zostawiłem Twoją wersję 18.1.0
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.5.0")
@@ -84,11 +84,11 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("org.robolectric:robolectric:4.11.1")
     testImplementation("androidx.fragment:fragment-testing:1.6.0")
-    testImplementation(libs.testng) // Upewnij się, że 'testng' jest zdefiniowane w Twoim libs.versions.toml
+    testImplementation(libs.testng)
     testImplementation(kotlin("test"))
 
-    androidTestImplementation(libs.androidx.espresso.core) // Użycie z version catalog
-    androidTestImplementation(libs.androidx.espresso.intents) // Użycie z version catalog
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.intents)
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
-    androidTestImplementation("androidx.test:core-ktx:1.5.0") // To może być duplikat androidx.test:core jeśli ktx nie jest potrzebne
+    androidTestImplementation("androidx.test:core-ktx:1.5.0")
 }
