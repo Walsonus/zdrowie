@@ -1,4 +1,4 @@
-package pack.zdrowie // Upewnij się, że nazwa pakietu jest poprawna
+package pack.zdrowie
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -46,7 +46,7 @@ import android.graphics.Color
  */
 class GpsFragment : Fragment(), OnMapReadyCallback {
 
-    // ... (bez zmian: requestPermissionLauncher, fusedLocationClient, locationCallback, locationDao, gMap, currentPositionMarker) ...
+
     /**
      * Launcher do obsługi prośby o uprawnienie do lokalizacji.
      * Wynik (przyznanie lub odmowa) jest obsługiwany w callbacku.
@@ -67,23 +67,15 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-    /** Klient usług lokalizacyjnych Google Play do pobierania danych GPS. */
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    /** Callback do odbierania aktualizacji lokalizacji. */
     private lateinit var locationCallback: LocationCallback
-    /** DAO do interakcji z tabelą lokalizacji w bazie Room. */
     private lateinit var locationDao: LocationDao
-    /** Obiekt mapy Google, gdy jest już gotowa. */
     private var gMap: GoogleMap? = null
-    /** Marker wskazujący aktualną pozycję użytkownika na mapie. */
     private var currentPositionMarker: Marker? = null
 
 
-    /**
-     * Wywoływane przy tworzeniu widoku fragmentu.
-     * Inicjalizuje DAO, klienta lokalizacji oraz callback lokalizacji.
-     * Zwraca napompowany layout dla tego fragmentu.
-     */
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -131,11 +123,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         return inflater.inflate(R.layout.fragment_gps, container, false)
     }
 
-    /**
-     * Wywoływane tuż po tym, jak onCreateView() zakończy działanie.
-     * To dobre miejsce na inicjalizację komponentów UI, ładowanie mapy
-     * oraz pierwsze sprawdzenie uprawnień.
-     */
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("GPS_LIFECYCLE", "GpsFragment: onViewCreated")
@@ -146,10 +134,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         requestLocationPermissionIfNeeded()
     }
 
-    /**
-     * Wywoływana, gdy mapa jest w pełni załadowana i gotowa do użycia.
-     * @param googleMap Instancja [GoogleMap], która jest gotowa.
-     */
+
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.gMap = googleMap
@@ -161,21 +146,21 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         val polandCenter = LatLng(52.0, 19.0)
         gMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(polandCenter, 6f))
 
-        // -------- 👇 NOWY/ZMODYFIKOWANY KOD: Wyświetlanie historii trasy 👇 -----------
+
         Log.d("GPS_MAP_HISTORY", "Próba załadowania historii trasy...")
         lifecycleScope.launch {
             val locationHistoryList = withContext(Dispatchers.IO) {
-                locationDao.getAllLocations() // Pobiera listę posortowaną od najnowszej do najstarszej
+                locationDao.getAllLocations()
             }
 
-            val chronologicalPath = locationHistoryList.reversed() // Odwracamy, aby rysować od najstarszej
+            val chronologicalPath = locationHistoryList.reversed()
             Log.d("GPS_MAP_HISTORY", "Pobrano ${chronologicalPath.size} punktów historii.")
 
             if (chronologicalPath.size > 1) {
                 val polylineOptions = PolylineOptions()
-                    .color(Color.BLUE) // Użyj android.graphics.Color.BLUE
+                    .color(Color.BLUE)
                     .width(10f)
-                    .clickable(true) // Opcjonalnie
+                    .clickable(true)
 
                 val boundsBuilder = LatLngBounds.Builder()
 
@@ -204,7 +189,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                 Log.d("GPS_MAP_HISTORY", "Nie znaleziono wystarczającej liczby punktów (${chronologicalPath.size}) do narysowania historii trasy.")
             }
         }
-        // -------- 👆 KONIEC NOWEGO/ZMODYFIKOWANEGO KODU 👆 -----------
+
     }
 
     /**
