@@ -3,9 +3,11 @@ package pack.zdrowie.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import pack.zdrowie.database.dao.LocationDao
 import pack.zdrowie.database.dao.StepsDAO
 import pack.zdrowie.database.dao.SupplementDAO
 import pack.zdrowie.database.dao.UserDAO
+import pack.zdrowie.database.entities.LocationEntity
 import pack.zdrowie.database.entities.Steps
 import pack.zdrowie.database.entities.Supplements
 import pack.zdrowie.database.entities.User
@@ -22,7 +24,7 @@ import pack.zdrowie.database.entities.User
  *
  * @constructor Creates an instance of the database.
  */
-@Database(entities = [User::class, Steps::class, Supplements::class], version = 1)
+@Database(entities = [User::class, Steps::class, Supplements::class, LocationEntity ::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -46,4 +48,7 @@ abstract class AppDatabase : RoomDatabase() {
      * @return Instance of [SupplementDAO].
      */
     abstract fun supplementDAO(): SupplementDAO
+    abstract fun locationDao(): LocationDao
+
+
 }
