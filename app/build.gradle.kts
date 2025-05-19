@@ -3,7 +3,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.android) // Teraz będzie używać wersji z libs.versions.toml (np. 2.0.0)
     id("kotlin-kapt")
 }
 
@@ -60,8 +60,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.github.sad-adnan:customToast:v1.3")
     implementation(libs.androidx.core.ktx)
@@ -73,6 +72,11 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.dagger:hilt-android:2.48")
+    kapt ("com.google.dagger:hilt-compiler:2.48")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    kapt ("androidx.room:room-compiler:2.6.1")
+    //implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.5.0")
@@ -91,4 +95,27 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.intents)
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("androidx.test:core-ktx:1.5.0")
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+
+    // Enforce consistent Kotlin stdlib versions
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib: 2.0.0") {
+            because("Wymuszenie spójnej wersji Kotlin stdlib z kompilatorem 2.0.0")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0") {
+            because("Wymuszenie spójnej wersji Kotlin stdlib-jdk7 z kompilatorem 2.0.0")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0") {
+            because("Wymuszenie spójnej wersji Kotlin stdlib-jdk8 z kompilatorem 2.0.0")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-common:2.0.0") {
+            because("Wymuszenie spójnej wersji Kotlin stdlib-common z kompilatorem 2.0.0")
+        }
+    }
 }

@@ -23,6 +23,7 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
+                  <entry key="Pixel_9_Pro" value="120" />
                   <entry key="Tests" value="360" />
                   <entry key="motorola motorola edge 50 pro" value="120" />
                 </map>
@@ -108,6 +109,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-339022196">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_9_Pro" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="185972819">
           <value>
             <AndroidTestResultsTableState>
@@ -180,6 +194,7 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
+                  <entry key="Pixel_9_Pro" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
               </option>
