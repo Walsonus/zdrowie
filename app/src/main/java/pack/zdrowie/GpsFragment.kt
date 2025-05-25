@@ -65,6 +65,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                     Toast.LENGTH_LONG
                 ).show()
             }
+
         }
 
 
