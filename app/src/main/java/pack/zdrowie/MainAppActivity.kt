@@ -14,6 +14,7 @@ class MainAppActivity : AppCompatActivity() {
     private var previousNavItemId = R.id.nav_home // default menu selection
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val userId = intent.getIntExtra("UserID", -1)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_app)
 
@@ -27,7 +28,7 @@ class MainAppActivity : AppCompatActivity() {
             }
 
             if (direction != 0) {
-                loadFragment(getFragmentForItem(item.itemId), direction)
+                loadFragment(getFragmentForItem(item.itemId, userId), direction)
                 previousNavItemId = item.itemId
             }
             true
@@ -35,19 +36,25 @@ class MainAppActivity : AppCompatActivity() {
 
         //default fragment with default menu selection
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment(), 0)
+            loadFragment(getFragmentForItem(R.id.nav_home, userId), 0)
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
     }
 
-    private fun getFragmentForItem(itemId: Int): Fragment {
-        return when (itemId) {
+    private fun getFragmentForItem(itemId: Int, userId: Int): Fragment {
+        val fragment: Fragment = when (itemId) {
             R.id.nav_home -> HomeFragment()
             R.id.nav_gps -> GpsFragment()
-            //R.id.nav_supplements -> SupplementsFragment()
-            //R.id.nav_profile -> ProfileFragment()
+            // R.id.nav_supplements -> SupplementsFragment()
+            // R.id.nav_profile -> ProfileFragment()
             else -> HomeFragment()
         }
+
+        val bundle = Bundle().apply {
+            putInt("UserID", userId)
+        }
+        fragment.arguments = bundle
+        return fragment
     }
 
 
