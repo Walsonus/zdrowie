@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import pack.zdrowie.databinding.ActivityMainAppBinding
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainAppActivity : AppCompatActivity() {
@@ -38,6 +39,8 @@ class MainAppActivity : AppCompatActivity() {
             loadFragment(HomeFragment(), 0)
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
+
+        MobileAds.initialize(this) { initializationStatus -> }
     }
 
     private fun getFragmentForItem(itemId: Int): Fragment {
