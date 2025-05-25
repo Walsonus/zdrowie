@@ -149,48 +149,48 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         gMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(polandCenter, 6f))
 
 
-        Log.d("GPS_MAP_HISTORY", "Próba załadowania historii trasy...")
-        lifecycleScope.launch {
-            val locationHistoryList = withContext(Dispatchers.IO) {
-                locationDao.getAllLocations()
-            }
-
-            val chronologicalPath = locationHistoryList.reversed()
-            Log.d("GPS_MAP_HISTORY", "Pobrano ${chronologicalPath.size} punktów historii.")
-
-            if (chronologicalPath.size > 1) {
-                val polylineOptions = PolylineOptions()
-                    .color(Color.BLUE)
-                    .width(10f)
-                    .clickable(true)
-
-                val boundsBuilder = LatLngBounds.Builder()
-
-                for (locationEntity in chronologicalPath) {
-                    val point = LatLng(locationEntity.latitude, locationEntity.longitude)
-                    polylineOptions.add(point)
-                    boundsBuilder.include(point)
-                }
-
-                withContext(Dispatchers.Main) {
-                    gMap?.addPolyline(polylineOptions)
-                    Log.d("GPS_MAP_HISTORY", "Narysowano Polyline na mapie.")
-
-                    try {
-                        val bounds = boundsBuilder.build()
-                        gMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) // 100 to padding
-                        Log.d("GPS_MAP_HISTORY", "Kamera dopasowana do granic trasy.")
-                    } catch (e: IllegalStateException) {
-                        Log.e("GPS_MAP_HISTORY", "Nie można zbudować granic dla kamery: ${e.message}")
-                        chronologicalPath.firstOrNull()?.let { firstPoint ->
-                            gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(firstPoint.latitude, firstPoint.longitude), 16f))
-                        }
-                    }
-                }
-            } else {
-                Log.d("GPS_MAP_HISTORY", "Nie znaleziono wystarczającej liczby punktów (${chronologicalPath.size}) do narysowania historii trasy.")
-            }
-        }
+//        Log.d("GPS_MAP_HISTORY", "Próba załadowania historii trasy...")
+//        lifecycleScope.launch {
+//            val locationHistoryList = withContext(Dispatchers.IO) {
+//                locationDao.getAllLocations()
+//            }
+//
+//            val chronologicalPath = locationHistoryList.reversed()
+//            Log.d("GPS_MAP_HISTORY", "Pobrano ${chronologicalPath.size} punktów historii.")
+//
+//            if (chronologicalPath.size > 1) {
+//                val polylineOptions = PolylineOptions()
+//                    .color(Color.BLUE)
+//                    .width(10f)
+//                    .clickable(true)
+//
+//                val boundsBuilder = LatLngBounds.Builder()
+//
+//                for (locationEntity in chronologicalPath) {
+//                    val point = LatLng(locationEntity.latitude, locationEntity.longitude)
+//                    polylineOptions.add(point)
+//                    boundsBuilder.include(point)
+//                }
+//
+//                withContext(Dispatchers.Main) {
+//                    gMap?.addPolyline(polylineOptions)
+//                    Log.d("GPS_MAP_HISTORY", "Narysowano Polyline na mapie.")
+//
+//                    try {
+//                        val bounds = boundsBuilder.build()
+//                        gMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) // 100 to padding
+//                        Log.d("GPS_MAP_HISTORY", "Kamera dopasowana do granic trasy.")
+//                    } catch (e: IllegalStateException) {
+//                        Log.e("GPS_MAP_HISTORY", "Nie można zbudować granic dla kamery: ${e.message}")
+//                        chronologicalPath.firstOrNull()?.let { firstPoint ->
+//                            gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(firstPoint.latitude, firstPoint.longitude), 16f))
+//                        }
+//                    }
+//                }
+//            } else {
+//                Log.d("GPS_MAP_HISTORY", "Nie znaleziono wystarczającej liczby punktów (${chronologicalPath.size}) do narysowania historii trasy.")
+//            }
+//        }
 
     }
 
@@ -209,8 +209,8 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             Log.d("GPS_PERMISSION", "Uprawnienie do lokalizacji jest już przyznane.")
-            startLocationUpdates()
-            enableMyLocationOnMap()
+//            startLocationUpdates()
+//            enableMyLocationOnMap()
         }
     }
 
