@@ -16,7 +16,9 @@ object DatabaseProvider
                 context.applicationContext,
                 AppDatabase::class.java,
                 "zdrowiepp.db"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
             INSTANCE = instance
             instance
         }
