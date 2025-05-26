@@ -1,4 +1,3 @@
-// HomeFragment.kt
 package pack.zdrowie
 
 import android.os.Bundle

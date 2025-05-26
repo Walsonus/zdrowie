@@ -45,7 +45,7 @@ class MainAppActivity : AppCompatActivity() {
         val fragment: Fragment = when (itemId) {
             R.id.nav_home -> HomeFragment()
             R.id.nav_gps -> GpsFragment()
-            // R.id.nav_supplements -> SupplementsFragment()
+            R.id.nav_supplements -> SupplementsFragment()
             // R.id.nav_profile -> ProfileFragment()
             else -> HomeFragment()
         }
