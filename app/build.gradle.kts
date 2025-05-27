@@ -61,6 +61,7 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-ads:24.3.0")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.github.sad-adnan:customToast:v1.3")
     implementation(libs.androidx.core.ktx)
