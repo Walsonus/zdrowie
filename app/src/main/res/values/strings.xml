@@ -19,7 +19,7 @@
     <string name="error_adding_user">Użytkownik nie został zarejestrowany</string>
     <string name="no_login_data">Informacje o użytkowniku nie zostały podane</string>
     <string name="user_logged">Użytkownik zalogowany</string>
-    <string name="welcome">Witaj,</string>
+    <string name="welcome">Witaj, %1$s</string>
     <string name="quick_actions">Szybkie akcje</string>
     <string name="steps">kroki</string>
     <string name="calories">kalorie</string>
