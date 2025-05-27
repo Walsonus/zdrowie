@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import pack.zdrowie.databinding.ActivityMainAppBinding
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainAppActivity : AppCompatActivity() {
@@ -45,6 +46,7 @@ class MainAppActivity : AppCompatActivity() {
         }
 
 
+        MobileAds.initialize(this) { initializationStatus -> }
 
     }
 
