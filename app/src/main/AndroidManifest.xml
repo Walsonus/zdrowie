@@ -28,7 +28,7 @@
             android:value="${mapsApiKeyPlaceholder}" />
         <activity
             android:name=".MainAppActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />

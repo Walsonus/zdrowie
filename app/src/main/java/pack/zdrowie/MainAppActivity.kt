@@ -1,8 +1,11 @@
 package pack.zdrowie
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import pack.zdrowie.databinding.ActivityMainAppBinding
@@ -16,6 +19,7 @@ class MainAppActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val userId = intent.getIntExtra("UserID", -1)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_app)
 
@@ -41,15 +45,20 @@ class MainAppActivity : AppCompatActivity() {
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
 
+
         MobileAds.initialize(this) { initializationStatus -> }
+
     }
+
+
+
 
     private fun getFragmentForItem(itemId: Int, userId: Int): Fragment {
         val fragment: Fragment = when (itemId) {
             R.id.nav_home -> HomeFragment()
             R.id.nav_gps -> GpsFragment()
-            // R.id.nav_supplements -> SupplementsFragment()
-            // R.id.nav_profile -> ProfileFragment()
+            R.id.nav_supplements -> SupplementsFragment()
+            R.id.nav_profile -> ProfileFragment()
             else -> HomeFragment()
         }
 
@@ -59,6 +68,8 @@ class MainAppActivity : AppCompatActivity() {
         fragment.arguments = bundle
         return fragment
     }
+
+
 
 
     //animation picker for correct transition
