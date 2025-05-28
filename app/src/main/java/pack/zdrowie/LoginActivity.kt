@@ -123,8 +123,6 @@ class LoginActivity : AppCompatActivity() {
             val user = userDAO.getUserByMail(userEmail)
             if (user != null) {
                 if (user.userPassword == userPassword) {
-                    // TODO: Change the target Activity to the correct one when ready
-
                     val intent = Intent(this@LoginActivity, MainAppActivity::class.java).apply {
                         putExtra("UserID", user.userId)
                     }
