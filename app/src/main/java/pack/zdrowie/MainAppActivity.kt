@@ -1,11 +1,8 @@
 package pack.zdrowie
 
-import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import pack.zdrowie.databinding.ActivityMainAppBinding
@@ -15,64 +12,64 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainAppActivity : AppCompatActivity() {
 
-    private var previousNavItemId = R.id.nav_home // default menu selection
+    private lateinit var binding: ActivityMainAppBinding
+    private var previousNavItemId = R.id.nav_home
+    private var userId: Int = -1 // Dodane pole do przechowywania UserID
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val userId = intent.getIntExtra("UserID", -1)
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_app)
+
+        // Inicjalizacja view binding
+        binding = ActivityMainAppBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Pobranie UserID z Intentu
+        userId = intent.getIntExtra("UserID", -1)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             val direction = when {
-                item.itemId > previousNavItemId -> 1 // right transition
-                item.itemId < previousNavItemId -> -1 // left transition
-                else -> 0 // no transition when same item selected
+                item.itemId > previousNavItemId -> 1
+                item.itemId < previousNavItemId -> -1
+                else -> 0
             }
 
             if (direction != 0) {
-                loadFragment(getFragmentForItem(item.itemId, userId), direction)
+                loadFragment(getFragmentForItem(item.itemId), direction)
                 previousNavItemId = item.itemId
             }
             true
         }
 
-        //default fragment with default menu selection
+        // Domyślny fragment z przekazaniem UserID
         if (savedInstanceState == null) {
-            loadFragment(getFragmentForItem(R.id.nav_home, userId), 0)
+            loadFragment(createHomeFragment(), 0)
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
 
-
         MobileAds.initialize(this) { initializationStatus -> }
-
     }
 
-
-
-
-    private fun getFragmentForItem(itemId: Int, userId: Int): Fragment {
-        val fragment: Fragment = when (itemId) {
-            R.id.nav_home -> HomeFragment()
-            R.id.nav_gps -> GpsFragment()
-            R.id.nav_supplements -> SupplementsFragment()
-            R.id.nav_profile -> ProfileFragment()
-            else -> HomeFragment()
+    private fun getFragmentForItem(itemId: Int): Fragment {
+        return when (itemId) {
+            R.id.nav_home -> createHomeFragment()
+            R.id.nav_gps -> GpsFragment() // Możesz też dodać przekazywanie UserID do innych fragmentów
+            //R.id.nav_supplements -> SupplementsFragment()
+            //R.id.nav_profile -> ProfileFragment()
+            else -> createHomeFragment()
         }
-
-        val bundle = Bundle().apply {
-            putInt("UserID", userId)
-        }
-        fragment.arguments = bundle
-        return fragment
     }
 
+    // Tworzy HomeFragment z przekazanym UserID
+    private fun createHomeFragment(): Fragment {
+        return HomeFragment().apply {
+            arguments = Bundle().apply {
+                putInt("UserID", userId)
+            }
+        }
+    }
 
-
-
-    //animation picker for correct transition
     private fun loadFragment(fragment: Fragment, direction: Int) {
         val enterAnim = when (direction) {
             1 -> R.anim.slide_in_left
@@ -86,22 +83,10 @@ class MainAppActivity : AppCompatActivity() {
             else -> 0
         }
 
-        val popEnterAnim = when (direction) {
-            1 -> R.anim.slide_in_left
-            -1 -> R.anim.slide_in_right
-            else -> 0
-        }
-
-        val popExitAnim = when (direction) {
-            1 -> R.anim.slide_out_right
-            -1 -> R.anim.slide_out_left
-            else -> 0
-        }
-
         supportFragmentManager.beginTransaction().apply {
-            setCustomAnimations(enterAnim, exitAnim, popEnterAnim, popExitAnim)
+            setCustomAnimations(enterAnim, exitAnim)
             replace(R.id.mainAppActivity, fragment)
-            addToBackStack(null)
+            // Usunięto addToBackStack aby uniknąć nagromadzenia fragmentów
             commit()
         }
     }

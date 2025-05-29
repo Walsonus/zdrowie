@@ -1,3 +1,4 @@
+// HomeFragment.kt
 package pack.zdrowie
 
 import android.os.Bundle
@@ -5,23 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pack.zdrowie.database.DatabaseProvider
-
-class HomeFragment : Fragment() {
-    private var userId: Int = -1
-
-
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 
 class HomeFragment : Fragment() {
-    private lateinit var adView: AdView
+    private var userId: Int = -1
+    private lateinit var adView: AdView // Deklaracja adView jako pola klasy
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +37,9 @@ class HomeFragment : Fragment() {
         // Znajdujemy TextView, w którym wyświetlimy powitanie
         val welcomeTextView = view.findViewById<TextView>(R.id.welcomeText)
 
+        val toast = Toast.makeText(requireContext(), userId.toString(), Toast.LENGTH_SHORT) // in Activity
+        toast.show()
+
         if (userId != -1) {
             val appDatabase = DatabaseProvider.getDatabase(requireContext())
             val userDAO = appDatabase.userDao()
@@ -56,11 +56,8 @@ class HomeFragment : Fragment() {
         } else {
             welcomeTextView.text = getString(R.string.welcome, "User")
         }
-    }
-}
 
-
-        // Znajdź widok AdView z layoutu
+        // Inicjalizacja AdView
         adView = view.findViewById(R.id.adView)
 
         // Opcjonalnie ustaw listener do monitorowania zdarzeń reklamowych
@@ -70,7 +67,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onAdFailedToLoad(p0: LoadAdError) {
-                // Obsłuż sytuację, gdy reklama nie załadowała się – możesz np. zapisać loga
+                // Obsłuż sytuację, gdy reklama nie załadowała się
             }
         }
 
@@ -79,7 +76,7 @@ class HomeFragment : Fragment() {
         adView.loadAd(adRequest)
     }
 
-    // Zarządzanie cyklem życia AdView – ważne dla wydajności i poprawnego działania reklamy.
+    // Zarządzanie cyklem życia AdView
     override fun onPause() {
         adView.pause()
         super.onPause()
@@ -95,4 +92,3 @@ class HomeFragment : Fragment() {
         super.onDestroy()
     }
 }
-
