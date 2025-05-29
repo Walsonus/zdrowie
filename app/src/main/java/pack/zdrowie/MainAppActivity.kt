@@ -55,8 +55,8 @@ class MainAppActivity : AppCompatActivity() {
         return when (itemId) {
             R.id.nav_home -> createHomeFragment()
             R.id.nav_gps -> GpsFragment() // Możesz też dodać przekazywanie UserID do innych fragmentów
-            //R.id.nav_supplements -> SupplementsFragment()
-            //R.id.nav_profile -> ProfileFragment()
+            R.id.nav_supplements -> SupplementsFragment()
+            R.id.nav_profile -> ProfileFragment()
             else -> createHomeFragment()
         }
     }
