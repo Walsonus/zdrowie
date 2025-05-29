@@ -50,7 +50,7 @@ class SupplementsFragment : Fragment() {
                 // Tutaj będzie obsługa dodawania
                 val name = dialogBinding.supplementNameEditText.text.toString()
                 val amount = dialogBinding.supplementAmountEditText.text.toString()
-                val frequency = dialogBinding.supplementFrequencyAutoComplete.text.toString()
+                //val frequency = dialogBinding.supplementFrequencyAutoComplete.text.toString()
 
                 // TODO: Zapisz dane suplementu
             }
