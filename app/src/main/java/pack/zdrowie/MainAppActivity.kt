@@ -9,13 +9,33 @@ import pack.zdrowie.databinding.ActivityMainAppBinding
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+/**
+ * Main application activity handling navigation between core features.
+ *
+ * <p>Responsible for:
+ * <ul>
+ *   <li>Managing bottom navigation menu</li>
+ *   <li>Switching between main app fragments</li>
+ *   <li>Passing user ID to fragments</li>
+ *   <li>Initializing AdMob ads</li>
+ *   <li>Handling fragment transition animations</li>
+ * </ul>
+ */
 class MainAppActivity : AppCompatActivity() {
 
+    /** View binding instance for activity_main_app layout */
     private lateinit var binding: ActivityMainAppBinding
+
+    /** Stores previously selected nav item ID for animation direction */
     private var previousNavItemId = R.id.nav_home
+
+    /** Current user ID received from LoginActivity */
     private var userId: Int = -1 // Dodane pole do przechowywania UserID
 
+    /**
+     * Initializes activity components.
+     * @param savedInstanceState Saved state from configuration changes
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +71,11 @@ class MainAppActivity : AppCompatActivity() {
         MobileAds.initialize(this) { initializationStatus -> }
     }
 
+    /**
+     * Creates fragment instance for given navigation item.
+     * @param itemId Selected bottom navigation item ID
+     * @return Corresponding fragment instance
+     */
     private fun getFragmentForItem(itemId: Int): Fragment {
         return when (itemId) {
             R.id.nav_home -> createHomeFragment()
@@ -61,7 +86,10 @@ class MainAppActivity : AppCompatActivity() {
         }
     }
 
-    // Tworzy HomeFragment z przekazanym UserID
+    /**
+     * Creates HomeFragment with user ID argument.
+     * @return Configured HomeFragment instance
+     */
     private fun createHomeFragment(): Fragment {
         return HomeFragment().apply {
             arguments = Bundle().apply {
@@ -69,7 +97,11 @@ class MainAppActivity : AppCompatActivity() {
             }
         }
     }
-
+    /**
+     * Loads fragment with directional slide animation.
+     * @param fragment Fragment to display
+     * @param direction Animation direction (1=right, -1=left, 0=none)
+     */
     private fun loadFragment(fragment: Fragment, direction: Int) {
         val enterAnim = when (direction) {
             1 -> R.anim.slide_in_left
