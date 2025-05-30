@@ -1,4 +1,3 @@
-// HomeFragment.kt
 package pack.zdrowie
 
 import android.os.Bundle
@@ -18,15 +17,18 @@ import com.google.android.gms.ads.LoadAdError
 
 class HomeFragment : Fragment() {
     private var userId: Int = -1
-    private lateinit var adView: AdView // Deklaracja adView jako pola klasy
+    private var currentSteps: Int = 0
+    private lateinit var adView: AdView
+    private lateinit var stepsCountTextView: TextView
+    private lateinit var welcomeTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Odczytujemy przekazany userID przez Bundle
         arguments?.let {
             userId = it.getInt("UserID", -1)
+            currentSteps = it.getInt("currentSteps", 0)
         }
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -34,10 +36,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Znajdujemy TextView, w którym wyświetlimy powitanie
-        val welcomeTextView = view.findViewById<TextView>(R.id.welcomeText)
+        welcomeTextView = view.findViewById(R.id.welcomeText)
+        stepsCountTextView = view.findViewById(R.id.stepsCount)
 
-        val toast = Toast.makeText(requireContext(), userId.toString(), Toast.LENGTH_SHORT) // in Activity
+        updateSteps(currentSteps)
+
+        val toast = Toast.makeText(requireContext(), "UserID: $userId", Toast.LENGTH_SHORT)
         toast.show()
 
         if (userId != -1) {
@@ -57,26 +61,31 @@ class HomeFragment : Fragment() {
             welcomeTextView.text = getString(R.string.welcome, "User")
         }
 
-        // Inicjalizacja AdView
         adView = view.findViewById(R.id.adView)
 
-        // Opcjonalnie ustaw listener do monitorowania zdarzeń reklamowych
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
-                // Reklama została poprawnie załadowana
             }
 
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                // Obsłuż sytuację, gdy reklama nie załadowała się
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
             }
         }
 
-        // Utwórz żądanie reklamy i załaduj reklamę
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
 
-    // Zarządzanie cyklem życia AdView
+    /**
+     * Publiczna metoda do aktualizacji wyświetlanej liczby kroków.
+     * Wywoływana przez MainAppActivity, gdy liczba kroków się zmienia.
+     */
+    fun updateSteps(steps: Int) {
+        currentSteps = steps
+        if (::stepsCountTextView.isInitialized) {
+            stepsCountTextView.text = currentSteps.toString()
+        }
+    }
+
     override fun onPause() {
         adView.pause()
         super.onPause()
