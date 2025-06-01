@@ -18,154 +18,174 @@ import pack.zdrowie.database.dao.UserDAO
 import pack.zdrowie.databinding.ActivityLoginBinding
 
 /**
- * LoginActivity handles the user login functionality.
+ * Handles user authentication and login flow.
  *
- * This Activity validates the login form inputs, communicates with the database
- * (using Room via the UserDAO), and triggers a login process. Upon successful login,
- * the user is navigated to the next screen (the target Activity name is subject to change).
+ * This activity provides:
+ * - Email/password validation
+ * - Database authentication via Room
+ * - Secure credential handling
+ * - Theme configuration (dark/light mode)
+ * - Smooth activity transitions
+ * - Edge-to-edge display support
+ *
+ * Flow:
+ * 1. User enters credentials
+ * 2. System validates input format
+ * 3. Credentials are checked against database
+ * 4. On success: User is redirected to MainAppActivity
+ * 5. On failure: Appropriate error messages are shown
  */
 class LoginActivity : AppCompatActivity() {
 
-    /** DAO instance for user operations */
     private lateinit var userDAO: UserDAO
-
-    /** Instance of the Room database */
     private lateinit var dataBase: AppDatabase
-
-    /** View binding instance for the activity layout */
     private lateinit var binding: ActivityLoginBinding
 
     /**
-     * Called when the activity is starting.
+     * Initializes activity components and sets up UI.
      *
-     * Initializes view binding, sets up edge-to-edge display, and initializes
-     * the database and its DAO. It also sets up view listeners.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously
-     *                           being shut down, then this Bundle contains the data it most
-     *                           recently supplied.
+     * @param savedInstanceState Persisted state from previous instance
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Enable edge-to-edge mode for immersive layout
+        configureWindow()
+        initializeBinding()
+        setupDatabase()
+        configureUI()
+    }
+
+    /** Configures edge-to-edge display and theme settings */
+    private fun configureWindow() {
         enableEdgeToEdge()
-        //DARK THEME
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        //LIGHT THEME
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        // Initialize view binding
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+    /** Initializes view binding and sets content view */
+    private fun initializeBinding() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Apply padding to accommodate system windows (edge-to-edge handling)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
 
-        // Initialize the database and obtain the UserDAO instance
+    /** Initializes database components */
+    private fun setupDatabase() {
         dataBase = DatabaseProvider.getDatabase(this)
         userDAO = dataBase.userDao()
-
-        // Set up view-related configurations
-        setupViews()
-        registerButton()
     }
 
-    /**
-     * Sets up listeners for view elements.
-     *
-     * In particular, this function sets a click listener on the login button
-     * which validates the login form and then performs the login operation if valid.
-     */
-    private fun setupViews() {
-        // Set a click listener on the login button
+    /** Configures all UI elements and event listeners */
+    private fun configureUI() {
+        setupLoginButton()
+        setupRegisterNavigation()
+    }
+
+    /** Sets up login button click handler */
+    private fun setupLoginButton() {
         binding.loginButton.setOnClickListener {
-            if (validateForm()) {
-                performLogin()
+            if (validateCredentials()) {
+                authenticateUser()
             }
         }
     }
 
-    /**
-     * Validates the login form.
-     *
-     * This function checks if the user has entered both an email and a password.
-     *
-     * @return true if both email and password fields contain data; false otherwise.
-     */
-    private fun validateForm(): Boolean {
-        val userEmail = binding.emailLayout.editText?.text.toString().trim()
-        val userPassword = binding.passwordLayout.editText?.text.toString().trim()
-        if (userEmail.isBlank() || userPassword.isBlank()) {
-            // Inform the user that login data is missing
-            CustomToast.ShowErrorToast(this@LoginActivity, getString(R.string.no_login_data))
-            return false
-        }
-        return true
-    }
-
-    /**
-     * Performs the user login process.
-     *
-     * This function retrieves the user based on the email provided,
-     * compares the retrieved password with the entered password, and if they match,
-     * proceeds to log in the user. On success, it is intended to navigate the user
-     * to the next Activity. (Currently, the navigation code is commented out.)
-     */
-    private fun performLogin() {
-        val userEmail = binding.emailLayout.editText?.text.toString().trim()
-        val userPassword = binding.passwordLayout.editText?.text.toString().trim()
-
-        // Launch a coroutine for asynchronous database operations
-        lifecycleScope.launch {
-            val user = userDAO.getUserByMail(userEmail)
-            if (user != null) {
-                if (user.userPassword == userPassword) {
-                    val intent = Intent(this@LoginActivity, MainAppActivity::class.java).apply {
-                        putExtra("UserID", user.userId)
-                    }
-                    startActivity(intent)
-                    finish()
-
-                    // TODO: Consider removing this Toast after implementing the proper transition
-                    //Toast.makeText(this@LoginActivity, getString(R.string.user_logged), Toast.LENGTH_SHORT).show()
-                    CustomToast.ShowSuccessToast(this@LoginActivity, false, getString(R.string.user_logged));
-                } else {
-                    // Inform the user about the incorrect password
-                    //Toast.makeText(this@LoginActivity, getString(R.string.wrong_password), Toast.LENGTH_SHORT).show()
-                    CustomToast.ShowErrorToast(this@LoginActivity,true,getString(R.string.wrong_password));
-                    return@launch
-                }
-            } else {
-                // Inform the user that the provided email does not exist
-                CustomToast.ShowErrorToast(this@LoginActivity, getString(R.string.wrong_email))
-                return@launch
-            }
-        }
-    }
-    // function needed to get private variable to use in tests
-    fun getBinding(): ActivityLoginBinding {
-        return binding
-    }
-
-    /**
-     * Registers the click listener for the register text.
-     *
-     * When the user clicks on the register text, the Activity transitions to the
-     * RegisterActivity (or Home Activity as per future changes) with a scene transition animation.
-     */
-    private fun registerButton() {
+    /** Sets up register text click handler */
+    private fun setupRegisterNavigation() {
         binding.registerText.setOnClickListener {
-            // Set a background resource for the window during the transition
-            window.setBackgroundDrawableResource(R.color.background_navy)
-            // Create an intent for RegisterActivity (adjust as needed)
-            val intent = Intent(this, RegisterActivity::class.java)
-            // Create transition options for a smoother scene transition
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle()
-            // Start the RegisterActivity using the defined options
-            startActivity(intent, options)
+            navigateToRegister()
         }
     }
+
+    /**
+     * Validates user input credentials.
+     *
+     * @return true if both email and password are non-empty, false otherwise
+     */
+    private fun validateCredentials(): Boolean {
+        val email = binding.emailLayout.editText?.text.toString().trim()
+        val password = binding.passwordLayout.editText?.text.toString().trim()
+
+        return when {
+            email.isBlank() || password.isBlank() -> {
+                showErrorToast(getString(R.string.no_login_data))
+                false
+            }
+            else -> true
+        }
+    }
+
+    /**
+     * Authenticates user against database credentials.
+     *
+     * Uses coroutine for database operation to avoid UI freezing.
+     * Shows appropriate feedback for success/failure cases.
+     */
+    private fun authenticateUser() {
+        val email = binding.emailLayout.editText?.text.toString().trim()
+        val password = binding.passwordLayout.editText?.text.toString().trim()
+
+        lifecycleScope.launch {
+            val user = userDAO.getUserByMail(email)
+
+            when {
+                user == null -> showErrorToast(getString(R.string.wrong_email))
+                user.userPassword != password -> showErrorToast(getString(R.string.wrong_password), true)
+                else -> handleSuccessfulLogin(user.userId)
+            }
+        }
+    }
+
+    /**
+     * Handles successful authentication.
+     *
+     * @param userId ID of the authenticated user
+     */
+    private fun handleSuccessfulLogin(userId: Int) {
+        showSuccessToast(getString(R.string.user_logged))
+        startActivity(
+            Intent(this, MainAppActivity::class.java).apply {
+                putExtra("UserID", userId)
+            }
+        )
+        finish()
+    }
+
+    /** Navigates to registration screen with transition animation */
+    private fun navigateToRegister() {
+        window.setBackgroundDrawableResource(R.color.background_navy)
+        startActivity(
+            Intent(this, RegisterActivity::class.java),
+            ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle()
+        )
+    }
+
+    /**
+     * Displays an error toast message.
+     *
+     * @param message The error message to display
+     * @param longDuration Whether to show the toast for a long duration
+     */
+    private fun showErrorToast(message: String, longDuration: Boolean = false) {
+        CustomToast.ShowErrorToast(this, longDuration, message)
+    }
+
+    /**
+     * Displays a success toast message.
+     *
+     * @param message The success message to display
+     * @param longDuration Whether to show the toast for a long duration
+     */
+    private fun showSuccessToast(message: String, longDuration: Boolean = false) {
+        CustomToast.ShowSuccessToast(this, longDuration, message)
+    }
+
+    /**
+     * Provides access to view binding for testing purposes.
+     *
+     * @return The activity's view binding instance
+     */
+    fun getBinding(): ActivityLoginBinding = binding
 }

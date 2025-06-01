@@ -27,7 +27,6 @@ import pack.zdrowie.database.dao.LocationDao
 import pack.zdrowie.database.DatabaseProvider
 import pack.zdrowie.database.entities.LocationEntity
 import com.google.android.gms.location.LocationRequest
-// Importy dla Google Maps
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -40,35 +39,36 @@ import com.google.android.gms.maps.model.LatLngBounds
 import android.graphics.Color
 
 /**
- * Fragment odpowiedzialny za obsługę GPS, proszenie o uprawnienia,
- * pobieranie lokalizacji, zapisywanie jej do lokalnej bazy danych Room
- * oraz wyświetlanie mapy Google z aktualną pozycją i historią trasy.
+ * Fragment handling GPS location tracking, permission management, and Google Maps integration.
+ *
+ * Key responsibilities:
+ * - Manages location permissions
+ * - Tracks device location using FusedLocationProvider
+ * - Stores location history in Room database
+ * - Displays real-time location and historical route on Google Maps
+ * - Handles proper lifecycle management for location updates
  */
 class GpsFragment : Fragment(), OnMapReadyCallback {
 
-
     /**
-     * Launcher do obsługi prośby o uprawnienie do lokalizacji.
-     * Wynik (przyznanie lub odmowa) jest obsługiwany w callbacku.
+     * Permission launcher for requesting location access.
+     * Handles both granted and denied permission scenarios.
      */
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                Log.d("GPS_PERMISSION", "Uprawnienie przyznane przez użytkownika.")
+                Log.d("GPS_PERMISSION", "Location permission granted by user")
                 startLocationUpdates()
                 enableMyLocationOnMap()
             } else {
-                Log.d("GPS_PERMISSION", "Uprawnienie odrzucone przez użytkownika.")
+                Log.d("GPS_PERMISSION", "Location permission denied by user")
                 Toast.makeText(
                     requireContext(),
-                    "Uprawnienie do lokalizacji jest wymagane do działania tej funkcji!",
+                    "Location permission is required for this feature!",
                     Toast.LENGTH_LONG
                 ).show()
             }
-
-
         }
-
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -76,8 +76,14 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     private var gMap: GoogleMap? = null
     private var currentPositionMarker: Marker? = null
 
-
-
+    /**
+     * Initializes fragment UI and location tracking components.
+     *
+     * @param inflater The LayoutInflater object
+     * @param container The parent view group
+     * @param savedInstanceState Saved instance state bundle
+     * @return The inflated view hierarchy
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,19 +91,28 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         Log.d("GPS_LIFECYCLE", "GpsFragment: onCreateView")
 
+        // Initialize database access
         val applicationContext = requireContext().applicationContext
         locationDao = DatabaseProvider.getDatabase(applicationContext).locationDao()
+
+        // Initialize location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+        // Configure location callback
         locationCallback = object : LocationCallback() {
+            /**
+             * Handles incoming location updates.
+             * @param locationResult Contains the new Location data
+             */
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult.lastLocation?.let { currentLocation ->
                     Log.d(
                         "GPS_CALLBACK",
-                        "Otrzymano lokalizację: Lat: ${currentLocation.latitude}, Lon: ${currentLocation.longitude}"
+                        "New location: Lat: ${currentLocation.latitude}, Lon: ${currentLocation.longitude}"
                     )
 
+                    // Create database entity
                     val locationEntityToSave = LocationEntity(
                         latitude = currentLocation.latitude,
                         longitude = currentLocation.longitude,
@@ -105,99 +120,65 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                         accuracy = if (currentLocation.hasAccuracy()) currentLocation.accuracy else null
                     )
 
+                    // Save to database in background
                     lifecycleScope.launch(Dispatchers.IO) {
                         try {
                             locationDao.insertLocation(locationEntityToSave)
                             Log.d(
                                 "GPS_DATABASE",
-                                "Zapisano lokalizację do bazy: $locationEntityToSave"
+                                "Saved location to database: $locationEntityToSave"
                             )
                         } catch (e: Exception) {
-                            Log.e("GPS_DATABASE", "Błąd zapisu lokalizacji do bazy", e)
+                            Log.e("GPS_DATABASE", "Error saving location to database", e)
                         }
                     }
 
-                    val nowyLatLng = LatLng(currentLocation.latitude, currentLocation.longitude)
-                    updateMapWithLocation(nowyLatLng)
+                    // Update map UI
+                    val newLatLng = LatLng(currentLocation.latitude, currentLocation.longitude)
+                    updateMapWithLocation(newLatLng)
                 }
             }
         }
         return inflater.inflate(R.layout.fragment_gps, container, false)
     }
 
-
+    /**
+     * Called after view creation. Initializes the map fragment and checks permissions.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("GPS_LIFECYCLE", "GpsFragment: onViewCreated")
 
+        // Initialize map
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment_container) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
+        // Check location permissions
         requestLocationPermissionIfNeeded()
     }
 
-
+    /**
+     * Called when GoogleMap is ready to be used.
+     * Configures basic map settings and initial view.
+     *
+     * @param googleMap The GoogleMap instance
+     */
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.gMap = googleMap
-        Log.d("GPS_MAP", "Mapa jest gotowa.")
+        Log.d("GPS_MAP", "Map is ready")
 
+        // Configure map UI
         gMap?.uiSettings?.isZoomControlsEnabled = true
         enableMyLocationOnMap()
 
+        // Set initial view to Poland
         val polandCenter = LatLng(52.0, 19.0)
         gMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(polandCenter, 6f))
-
-
-//        Log.d("GPS_MAP_HISTORY", "Próba załadowania historii trasy...")
-//        lifecycleScope.launch {
-//            val locationHistoryList = withContext(Dispatchers.IO) {
-//                locationDao.getAllLocations()
-//            }
-//
-//            val chronologicalPath = locationHistoryList.reversed()
-//            Log.d("GPS_MAP_HISTORY", "Pobrano ${chronologicalPath.size} punktów historii.")
-//
-//            if (chronologicalPath.size > 1) {
-//                val polylineOptions = PolylineOptions()
-//                    .color(Color.BLUE)
-//                    .width(10f)
-//                    .clickable(true)
-//
-//                val boundsBuilder = LatLngBounds.Builder()
-//
-//                for (locationEntity in chronologicalPath) {
-//                    val point = LatLng(locationEntity.latitude, locationEntity.longitude)
-//                    polylineOptions.add(point)
-//                    boundsBuilder.include(point)
-//                }
-//
-//                withContext(Dispatchers.Main) {
-//                    gMap?.addPolyline(polylineOptions)
-//                    Log.d("GPS_MAP_HISTORY", "Narysowano Polyline na mapie.")
-//
-//                    try {
-//                        val bounds = boundsBuilder.build()
-//                        gMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) // 100 to padding
-//                        Log.d("GPS_MAP_HISTORY", "Kamera dopasowana do granic trasy.")
-//                    } catch (e: IllegalStateException) {
-//                        Log.e("GPS_MAP_HISTORY", "Nie można zbudować granic dla kamery: ${e.message}")
-//                        chronologicalPath.firstOrNull()?.let { firstPoint ->
-//                            gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(firstPoint.latitude, firstPoint.longitude), 16f))
-//                        }
-//                    }
-//                }
-//            } else {
-//                Log.d("GPS_MAP_HISTORY", "Nie znaleziono wystarczającej liczby punktów (${chronologicalPath.size}) do narysowania historii trasy.")
-//            }
-//        }
-
     }
 
     /**
-     * Sprawdza, czy uprawnienie do lokalizacji (ACCESS_FINE_LOCATION) jest przyznane.
-     * Jeśli nie, prosi o nie użytkownika za pomocą [requestPermissionLauncher].
-     * Jeśli tak, uruchamia aktualizacje lokalizacji i włącza warstwę "Moja Lokalizacja" na mapie.
+     * Checks and requests location permission if not already granted.
      */
     private fun requestLocationPermissionIfNeeded() {
         if (ContextCompat.checkSelfPermission(
@@ -205,98 +186,90 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("GPS_PERMISSION", "Uprawnienie do lokalizacji nie jest przyznane. Proszę o nie...")
+            Log.d("GPS_PERMISSION", "Location permission not granted. Requesting...")
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            Log.d("GPS_PERMISSION", "Uprawnienie do lokalizacji jest już przyznane.")
-//            startLocationUpdates()
-//            enableMyLocationOnMap()
+            Log.d("GPS_PERMISSION", "Location permission already granted")
         }
     }
 
     /**
-     * Rozpoczyna proces nasłuchiwania na aktualizacje lokalizacji od [FusedLocationProviderClient].
-     * Ta funkcja powinna być wywoływana tylko po upewnieniu się, że uprawnienia są przyznane.
+     * Starts receiving location updates with high accuracy settings.
+     * Requires location permission to be granted first.
      */
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.w("GPS_UPDATES", "Próba uruchomienia startLocationUpdates bez uprawnień. Przerywam.")
+            Log.w("GPS_UPDATES", "Attempt to startLocationUpdates without permission. Aborting.")
             return
         }
 
+        // Configure location request
         val locationRequest =
             LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L).apply {
                 setMinUpdateIntervalMillis(5000L)
                 setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
                 setWaitForAccurateLocation(true)
             }.build()
+
         try {
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
             )
-            Log.d("GPS_UPDATES", "Uruchomiono nasłuchiwanie aktualizacji lokalizacji.")
+            Log.d("GPS_UPDATES", "Started location updates listening.")
         } catch (e: SecurityException) {
-            Log.e("GPS_UPDATES", "Błąd bezpieczeństwa (SecurityException) przy uruchamianiu aktualizacji.", e)
+            Log.e("GPS_UPDATES", "SecurityException when starting location updates.", e)
         }
     }
 
     /**
-     * Zatrzymuje nasłuchiwanie na aktualizacje lokalizacji.
-     * Ważne, aby wywołać tę metodę, gdy fragment nie jest już aktywny, w celu oszczędzania baterii.
+     * Stops receiving location updates to conserve battery.
+     * Should be called when the fragment is no longer active.
      */
     private fun stopLocationUpdates() {
         if (::fusedLocationClient.isInitialized && ::locationCallback.isInitialized) {
             try {
                 fusedLocationClient.removeLocationUpdates(locationCallback)
-                Log.d("GPS_UPDATES", "Zatrzymano nasłuchiwanie aktualizacji lokalizacji.")
+                Log.d("GPS_UPDATES", "Stopped location updates.")
             } catch (e: Exception) {
-                Log.e("GPS_UPDATES", "Błąd podczas zatrzymywania aktualizacji lokalizacji.", e)
+                Log.e("GPS_UPDATES", "Error stopping location updates.", e)
             }
         } else {
-            Log.d("GPS_UPDATES", "Nie można zatrzymać aktualizacji: komponenty nie zainicjalizowane.")
+            Log.d("GPS_UPDATES", "Cannot stop updates: components not initialized.")
         }
     }
 
     /**
-     * Wywoływane, gdy fragment jest pauzowany. Zatrzymujemy aktualizacje lokalizacji.
-     */
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
-        Log.d("GPS_LIFECYCLE", "GpsFragment: onPause() - Zatrzymano aktualizacje lokalizacji.")
-    }
-
-    /**
-     * Aktualizuje mapę o nową pozycję: przesuwa kamerę i aktualizuje/dodaje marker.
-     * @param latLng Nowe współrzędne [LatLng].
+     * Updates the map with new location coordinates.
+     * @param latLng The new location coordinates
      */
     private fun updateMapWithLocation(latLng: LatLng) {
         if (gMap != null) {
+            // Update or create marker
             if (currentPositionMarker == null) {
                 currentPositionMarker = gMap?.addMarker(
                     MarkerOptions()
                         .position(latLng)
-                        .title("Moja Aktualna Pozycja")
+                        .title("My Current Position")
                 )
             } else {
                 currentPositionMarker?.position = latLng
             }
+
+            // Move camera to new position
             gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
         }
     }
 
     /**
-     * Sprawdza uprawnienia i jeśli są przyznane, włącza warstwę "Moja Lokalizacja" na mapie
-     * oraz przycisk do centrowania na tej lokalizacji.
-     * Powinna być wywoływana po tym, jak mapa (`gMap`) jest gotowa.
+     * Enables "My Location" layer on the map if permissions are granted.
      */
     @SuppressLint("MissingPermission")
     private fun enableMyLocationOnMap() {
         if (gMap == null) {
-            Log.w("GPS_MAP", "Próba włączenia MyLocationLayer, ale mapa (gMap) nie jest jeszcze gotowa.")
+            Log.w("GPS_MAP", "Attempt to enable MyLocationLayer before map is ready.")
             return
         }
 
@@ -304,10 +277,18 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             gMap?.isMyLocationEnabled = true
             gMap?.uiSettings?.isMyLocationButtonEnabled = true
-            Log.d("GPS_MAP", "Warstwa 'Moja Lokalizacja' włączona.")
+            Log.d("GPS_MAP", "Enabled My Location layer.")
         } else {
-            Log.w("GPS_MAP", "Nie można włączyć warstwy 'Moja Lokalizacja' - brak uprawnień.")
+            Log.w("GPS_MAP", "Cannot enable My Location layer - missing permissions.")
         }
     }
-}
 
+    /**
+     * Called when fragment is paused. Stops location updates to conserve battery.
+     */
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+        Log.d("GPS_LIFECYCLE", "GpsFragment: onPause() - Stopped location updates.")
+    }
+}

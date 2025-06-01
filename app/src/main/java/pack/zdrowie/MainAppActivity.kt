@@ -1,217 +1,138 @@
 package pack.zdrowie
 
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.ads.MobileAds
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import pack.zdrowie.databinding.ActivityMainAppBinding
-import pack.zdrowie.stepCounter.StepCounterManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import pack.zdrowie.database.DatabaseProvider
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 
 /**
- * The main activity of the application, responsible for managing fragment navigation,
- * step counter initialization, and permission handling.
+ * HomeFragment displays a welcome message to the user, step count,
+ * and a Google AdMob banner advertisement.
  */
-class MainAppActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainAppBinding
-    private var previousNavItemId = R.id.nav_home
+class HomeFragment : Fragment() {
     private var userId: Int = -1
+    private var currentSteps: Int = 0
+    private lateinit var adView: AdView
+    private lateinit var stepsCountTextView: TextView
+    private lateinit var welcomeTextView: TextView
 
     /**
-     * Instance of [StepCounterManager], responsible for the step counting logic.
-     */
-    lateinit var stepCounterManager: StepCounterManager
-    private val ACTIVITY_RECOGNITION_PERMISSION_CODE = 100 // Code for handling permission requests
-
-    private val handler = Handler(Looper.getMainLooper())
-    private val updateStepsRunnable = object : Runnable {
-        override fun run() {
-            // This method updates the steps in the currently displayed fragment.
-            updateCurrentFragmentSteps()
-            // Schedules the next execution after 1 second.
-            handler.postDelayed(this, 1000)
-        }
-    }
-
-    /**
-     * Called when the activity is first created. Initializes views,
-     * manages navigation, the step sensor, and requests permissions.
+     * Called to have the fragment instantiate its user interface view.
+     * Retrieves userId and currentSteps from arguments bundle.
      *
-     * @param savedInstanceState If the activity is being re-initialized after
-     * previously being shut down then this Bundle contains the data it most
-     * recently supplied in `onSaveInstanceState(Bundle)`. Otherwise, it is null.
+     * @param inflater The LayoutInflater object that can be used to inflate any views.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous state.
+     * @return The View for the fragment's UI, or null.
      */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        binding = ActivityMainAppBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        // Retrieves UserID from the Intent.
-        userId = intent.getIntExtra("UserID", -1)
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-
-        // Initializes the step counter manager.
-        stepCounterManager = StepCounterManager(this)
-
-        // Sets the listener for the bottom navigation.
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            val direction = when {
-                item.itemId > previousNavItemId -> 1 // Slide left
-                item.itemId < previousNavItemId -> -1 // Slide right
-                else -> 0 // No change
-            }
-
-            if (direction != 0) {
-                loadFragment(getFragmentForItem(item.itemId), direction)
-                previousNavItemId = item.itemId
-            }
-            true
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        arguments?.let {
+            userId = it.getInt("UserID", -1)
+            currentSteps = it.getInt("currentSteps", 0)
         }
-
-        // Loads the initial fragment (HomeFragment) on first launch.
-        if (savedInstanceState == null) {
-            loadFragment(createHomeFragment(stepCounterManager.getSteps()), 0)
-            bottomNavigationView.selectedItemId = R.id.nav_home
-        }
-
-        // Initializes the Mobile Ads SDK.
-        MobileAds.initialize(this) { initializationStatus ->
-            // You can add logic after ad initialization.
-        }
-
-        // Checks and requests permission for physical activity recognition.
-        checkAndRequestActivityRecognitionPermission()
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     /**
-     * Called when the activity becomes visible to the user.
-     * Starts listening for step sensor events and periodically updating the UI.
+     * Called immediately after onCreateView. Initializes UI elements,
+     * displays welcome message, sets current step count, and loads ads.
+     *
+     * @param view The View returned by onCreateView.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous state.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        welcomeTextView = view.findViewById(R.id.welcomeText)
+        stepsCountTextView = view.findViewById(R.id.stepsCount)
+
+        updateSteps(currentSteps)
+
+        Toast.makeText(requireContext(), "UserID: $userId", Toast.LENGTH_SHORT).show()
+
+        if (userId != -1) {
+            val appDatabase = DatabaseProvider.getDatabase(requireContext())
+            val userDAO = appDatabase.userDao()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                val user = userDAO.getUserById(userId)
+                if (user != null) {
+                    val welcomeMessage = getString(R.string.welcome, user.userMail)
+                    welcomeTextView.text = welcomeMessage
+                } else {
+                    welcomeTextView.text = getString(R.string.welcome, "User1")
+                }
+            }
+        } else {
+            welcomeTextView.text = getString(R.string.welcome, "User")
+        }
+
+        adView = view.findViewById(R.id.adView)
+
+        adView.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                // Ad successfully loaded
+            }
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                // Handle the failure
+            }
+        }
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+    }
+
+    /**
+     * Updates the displayed number of steps.
+     * This method can be called from outside, e.g., by an activity.
+     *
+     * @param steps The new step count to be displayed.
+     */
+    fun updateSteps(steps: Int) {
+        currentSteps = steps
+        if (::stepsCountTextView.isInitialized) {
+            stepsCountTextView.text = currentSteps.toString()
+        }
+    }
+
+    /**
+     * Called when the Fragment is no longer resumed.
+     * Pauses the ad view to save resources.
+     */
+    override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    /**
+     * Called when the Fragment is visible and resumed again.
+     * Resumes the ad view.
      */
     override fun onResume() {
         super.onResume()
-        stepCounterManager.startListening()
-        // Starts periodically updating the step counter UI.
-        handler.post(updateStepsRunnable)
+        adView.resume()
     }
 
     /**
-     * Called when the activity is no longer in the foreground.
-     * Stops listening for step sensor events and stops UI updates.
+     * Called when the Fragment is being destroyed.
+     * Destroys the ad view to free resources.
      */
-    override fun onPause() {
-        super.onPause()
-        // Stops listening to the step sensor when the activity is paused.
-        stepCounterManager.stopListening()
-        // Stops periodically updating the step counter UI.
-        handler.removeCallbacks(updateStepsRunnable)
-    }
-
-    /**
-     * Returns a fragment instance based on the selected navigation item.
-     *
-     * @param itemId The ID of the selected navigation item.
-     * @return An instance of the corresponding fragment.
-     */
-    private fun getFragmentForItem(itemId: Int): Fragment {
-        return when (itemId) {
-            R.id.nav_home -> createHomeFragment(stepCounterManager.getSteps())
-            R.id.nav_gps -> GpsFragment()
-            R.id.nav_supplements -> SupplementsFragment()
-            R.id.nav_profile -> ProfileFragment()
-            else -> createHomeFragment(stepCounterManager.getSteps())
-        }
-    }
-
-    /**
-     * Creates an instance of [HomeFragment] and passes the UserID and initial step count to it.
-     * @param initialSteps The initial number of steps to display in HomeFragment.
-     * @return A new instance of HomeFragment.
-     */
-    private fun createHomeFragment(initialSteps: Int): HomeFragment {
-        return HomeFragment().apply {
-            arguments = Bundle().apply {
-                putInt("UserID", userId)
-                putInt("currentSteps", initialSteps)
-            }
-        }
-    }
-
-    /**
-     * Loads the given fragment into the activity's container with animations.
-     * @param fragment The fragment to load.
-     * @param direction The animation direction (1 for left, -1 for right, 0 for no animation).
-     */
-    private fun loadFragment(fragment: Fragment, direction: Int) {
-        val enterAnim = when (direction) {
-            1 -> R.anim.slide_in_left
-            -1 -> R.anim.slide_in_right
-            else -> 0
-        }
-        val exitAnim = when (direction) {
-            1 -> R.anim.slide_out_right
-            -1 -> R.anim.slide_out_left
-            else -> 0
-        }
-
-        supportFragmentManager.beginTransaction().apply {
-            setCustomAnimations(enterAnim, exitAnim)
-            replace(R.id.mainAppActivity, fragment)
-            commit()
-        }
-    }
-
-    /**
-     * Checks if the application has the `ACTIVITY_RECOGNITION` permission,
-     * and requests it if necessary.
-     */
-    private fun checkAndRequestActivityRecognitionPermission() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION),
-                ACTIVITY_RECOGNITION_PERMISSION_CODE)
-        }
-    }
-
-    /**
-     * Handles the result of a permission request.
-     * Called after the user has responded to a permission request.
-     *
-     * @param requestCode The request code passed in `requestPermissions`.
-     * @param permissions The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     * which is either [PackageManager.PERMISSION_GRANTED] or [PackageManager.PERMISSION_DENIED]. Never null.
-     */
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ACTIVITY_RECOGNITION_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Activity permission granted!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Activity permission denied. Step counter may not work.", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    /**
-     * Updates the step count in the currently displayed fragment,
-     * if it is a [HomeFragment].
-     */
-    private fun updateCurrentFragmentSteps() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.mainAppActivity)
-        if (currentFragment is HomeFragment) {
-            currentFragment.updateSteps(stepCounterManager.getSteps())
-        }
+    override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 }

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android) // Teraz będzie używać wersji z libs.versions.toml (np. 2.0.0)
     id("kotlin-kapt")
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 val localProperties = Properties()
@@ -103,6 +104,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
+    dokkaPlugin("org.jetbrains.dokka:android-documentation-plugin:2.0.0")
 
     // Enforce consistent Kotlin stdlib versions
     constraints {
