@@ -16,108 +16,102 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 
 /**
- * The main home screen fragment displaying user welcome message and advertisements.
- *
- * Key Features:
- * - Displays personalized welcome message for logged-in users
- * - Manages AdMob banner ad lifecycle
- * - Handles user data retrieval from Room database
+ * HomeFragment displays a welcome message to the user, step count,
+ * and a Google AdMob banner advertisement.
  */
 class HomeFragment : Fragment() {
     private var userId: Int = -1
+    private var currentSteps: Int = 0
     private lateinit var adView: AdView
+    private lateinit var stepsCountTextView: TextView
+    private lateinit var welcomeTextView: TextView
 
     /**
-     * Inflates the fragment layout and processes incoming arguments.
+     * Called to have the fragment instantiate its user interface view.
+     * Retrieves userId and currentSteps from arguments bundle.
      *
-     * @param inflater The LayoutInflater object
-     * @param container The parent view group
-     * @param savedInstanceState Saved instance state bundle
-     * @return The inflated view hierarchy
+     * @param inflater The LayoutInflater object that can be used to inflate any views.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous state.
+     * @return The View for the fragment's UI, or null.
      */
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Retrieve user ID from fragment arguments
         arguments?.let {
             userId = it.getInt("UserID", -1)
+            currentSteps = it.getInt("currentSteps", 0)
         }
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     /**
-     * Configures the fragment UI after view creation.
+     * Called immediately after onCreateView. Initializes UI elements,
+     * displays welcome message, sets current step count, and loads ads.
      *
-     * Responsibilities:
-     * - Displays welcome message with user email
-     * - Initializes and loads AdMob banner ad
-     * - Sets up ad event listeners
+     * @param view The View returned by onCreateView.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous state.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize welcome message TextView
-        val welcomeTextView = view.findViewById<TextView>(R.id.welcomeText)
+        welcomeTextView = view.findViewById(R.id.welcomeText)
+        stepsCountTextView = view.findViewById(R.id.stepsCount)
 
-        // Debug toast showing user ID (remove in production)
-        Toast.makeText(requireContext(), "User ID: $userId", Toast.LENGTH_SHORT).show()
+        updateSteps(currentSteps)
+
+        Toast.makeText(requireContext(), "UserID: $userId", Toast.LENGTH_SHORT).show()
 
         if (userId != -1) {
-            // Fetch user data from database
             val appDatabase = DatabaseProvider.getDatabase(requireContext())
             val userDAO = appDatabase.userDao()
 
             viewLifecycleOwner.lifecycleScope.launch {
                 val user = userDAO.getUserById(userId)
-                welcomeTextView.text = if (user != null) {
-                    getString(R.string.welcome, user.userMail) // Personalized welcome
+                if (user != null) {
+                    val welcomeMessage = getString(R.string.welcome, user.userMail)
+                    welcomeTextView.text = welcomeMessage
                 } else {
-                    getString(R.string.welcome, "Guest") // Fallback
+                    welcomeTextView.text = getString(R.string.welcome, "User1")
                 }
             }
         } else {
-            welcomeTextView.text = getString(R.string.welcome, "Guest")
+            welcomeTextView.text = getString(R.string.welcome, "User")
         }
 
-        // Initialize AdMob banner ad
-        initializeAdView(view)
-    }
-
-    /**
-     * Initializes and configures the AdMob banner ad.
-     *
-     * @param view The parent view containing the adView
-     */
-    private fun initializeAdView(view: View) {
         adView = view.findViewById(R.id.adView)
 
-        // Ad event listener
         adView.adListener = object : AdListener() {
-            /**
-             * Called when an ad is successfully loaded.
-             */
             override fun onAdLoaded() {
-                // Ad successfully loaded and visible
+                // Ad successfully loaded
             }
 
-            /**
-             * Called when an ad request fails.
-             * @param loadAdError The error object containing failure details
-             */
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                // Handle ad loading failure (e.g., log error)
+                // Handle the failure
             }
         }
 
-        // Load the ad
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
 
     /**
-     * Pauses the ad view when fragment is paused.
+     * Updates the displayed number of steps.
+     * This method can be called from outside, e.g., by an activity.
+     *
+     * @param steps The new step count to be displayed.
+     */
+    fun updateSteps(steps: Int) {
+        currentSteps = steps
+        if (::stepsCountTextView.isInitialized) {
+            stepsCountTextView.text = currentSteps.toString()
+        }
+    }
+
+    /**
+     * Called when the Fragment is no longer resumed.
+     * Pauses the ad view to save resources.
      */
     override fun onPause() {
         adView.pause()
@@ -125,7 +119,8 @@ class HomeFragment : Fragment() {
     }
 
     /**
-     * Resumes the ad view when fragment is resumed.
+     * Called when the Fragment is visible and resumed again.
+     * Resumes the ad view.
      */
     override fun onResume() {
         super.onResume()
@@ -133,7 +128,8 @@ class HomeFragment : Fragment() {
     }
 
     /**
-     * Destroys the ad view when fragment is destroyed.
+     * Called when the Fragment is being destroyed.
+     * Destroys the ad view to free resources.
      */
     override fun onDestroy() {
         adView.destroy()
